@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="wrapper">
+            Enter an Ingredient: <input type="text" name="ingredient" id="ingredientField" />
+            <button id="submit" onclick="getRecipes()" style="margin-bottom: 50px;">Submit</button>
+        </div>
+        <div id="ingredientRecipes" class = recipes></div>
+    </div>
+
+<script>
+
+function getRecipes() {
+    console.log('submit was clicked');
+    let ingredientName = document.getElementById('ingredientField').value
+    if(ingredientName === '') {
+        return alert('Please enter an ingredient')
+    }
+
+    let ingredientDiv = document.getElementById('ingredientRecipes')
+    ingredientDiv.innerHTML = ''
+
+    let xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            let response = JSON.parse(xhr.responseText)
+            let recipes = response.recipes
+            //let numberOfImages = response.length;
+
+            for (let recipe of recipes) {
+              ingredientDiv.innerHTML = ingredientDiv.innerHTML + `
+              <div class="recipe">
+                    <a href="${recipe.f2f_url}" target="_blank">
+                        <img src=${recipe.image_url} />
+                        <h2>${recipe.title}</h2>
+                    </a>
+                </div>
+              `
+            }
+      }
+   }
+    xhr.open('GET', `/recipes/?ingredients=${ingredientName}`, true)
+    xhr.send()
+}
+
+</script>
+
+</body>
+
+</html>
